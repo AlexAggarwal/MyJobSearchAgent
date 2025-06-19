@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { X, Upload, FileText, Sparkles, Cloud, HardDrive } from 'lucide-react';
-import OptimizationResults from './OptimizationResults';
+import React, { useState } from "react";
+import { X, Upload, FileText, Sparkles, Cloud, HardDrive } from "lucide-react";
+import OptimizationResults from "./OptimizationResults";
 
 interface AIEnhancementModalProps {
   jobDescription: string;
@@ -8,135 +8,184 @@ interface AIEnhancementModalProps {
   onClose: () => void;
 }
 
-const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({ 
-  jobDescription, 
-  onSave, 
-  onClose 
+export type OptimizationResultsType = {
+  matchScore: number;
+  summary: string;
+  strengths: string[];
+  gaps: string[];
+  suggestions: string[];
+  optimizedResumeUrl: string;
+  optimizedCoverLetterUrl: string;
+  keywordAnalysis: {
+    coverageScore: number;
+    coveredKeywords: string[];
+    missingKeywords: string[];
+  };
+  experienceOptimization: {
+    company: string;
+    position: string;
+    relevanceScore: number;
+    included: boolean;
+    reasoning?: string;
+  }[];
+  skillsOptimization: {
+    technicalSkills: string[];
+    softSkills: string[];
+    missingSkills: string[];
+  };
+};
+
+const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
+  jobDescription,
+  onSave,
+  onClose,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [cloudProvider, setCloudProvider] = useState<string>('');
-  const [cloudFileUrl, setCloudFileUrl] = useState<string>('');
+  const [cloudProvider, setCloudProvider] = useState<string>("");
+  const [cloudFileUrl, setCloudFileUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [optimizationResults, setOptimizationResults] = useState<any>(null);
+  const [optimizationResults, setOptimizationResults] =
+    useState<OptimizationResultsType | null>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       // Validate file type
       const allowedTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ];
-      
+
       if (!allowedTypes.includes(file.type)) {
-        setError('Please select a PDF or Word document');
+        setError("Please select a PDF or Word document");
         return;
       }
-      
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setError('File size must be less than 10MB');
+
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB limit
+        setError("File size must be less than 10MB");
         return;
       }
-      
+
       setSelectedFile(file);
-      setError('');
-      setCloudFileUrl(''); // Clear cloud URL if local file is selected
+      setError("");
+      setCloudFileUrl(""); // Clear cloud URL if local file is selected
     }
   };
 
   const handleCloudProviderChange = (provider: string) => {
     setCloudProvider(provider);
     setSelectedFile(null); // Clear local file if cloud provider is selected
-    setCloudFileUrl('');
+    setCloudFileUrl("");
   };
 
   const handleGenerateAI = async () => {
     if (!selectedFile && !cloudFileUrl) {
-      setError('Please select a resume file or provide a cloud file URL');
+      setError("Please select a resume file or provide a cloud file URL");
       return;
     }
 
     if (!jobDescription.trim()) {
-      setError('Job description is required for AI enhancement');
+      setError("Job description is required for AI enhancement");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       // Simulate AI processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       // Generate mock URLs for the enhanced documents
       const timestamp = Date.now();
       const enhancedResumeUrl = `https://example.com/ai-enhanced-resume-${timestamp}.pdf`;
       const enhancedCoverLetterUrl = `https://example.com/ai-enhanced-cover-letter-${timestamp}.pdf`;
-      
+
       // Generate mock optimization results
       const mockResults = {
         matchScore: 85,
-        summary: "Your resume shows strong alignment with this position, with excellent technical skills and relevant experience. The AI optimization has enhanced keyword density and improved content structure for better ATS compatibility.",
+        summary:
+          "Your resume shows strong alignment with this position, with excellent technical skills and relevant experience. The AI optimization has enhanced keyword density and improved content structure for better ATS compatibility.",
         strengths: [
           "Strong technical background in required technologies",
           "Relevant industry experience with measurable achievements",
           "Good educational background aligned with job requirements",
-          "Demonstrated leadership and project management skills"
+          "Demonstrated leadership and project management skills",
         ],
         gaps: [
           "Missing some specific certifications mentioned in job posting",
           "Could emphasize cloud computing experience more prominently",
-          "Limited mention of agile methodology experience"
+          "Limited mention of agile methodology experience",
         ],
         suggestions: [
           "Add specific metrics to quantify your achievements",
           "Include more industry-specific keywords throughout the resume",
           "Highlight collaborative projects and team leadership examples",
-          "Consider adding a professional summary section"
+          "Consider adding a professional summary section",
         ],
         optimizedResumeUrl: enhancedResumeUrl,
         optimizedCoverLetterUrl: enhancedCoverLetterUrl,
         keywordAnalysis: {
           coverageScore: 78,
-          coveredKeywords: ["JavaScript", "React", "Node.js", "AWS", "Git", "Agile", "Team Leadership"],
-          missingKeywords: ["Docker", "Kubernetes", "CI/CD", "Microservices"]
+          coveredKeywords: [
+            "JavaScript",
+            "React",
+            "Node.js",
+            "AWS",
+            "Git",
+            "Agile",
+            "Team Leadership",
+          ],
+          missingKeywords: ["Docker", "Kubernetes", "CI/CD", "Microservices"],
         },
         experienceOptimization: [
           {
             company: "Tech Solutions Inc",
             position: "Senior Developer",
             relevanceScore: 92,
-            included: true
+            included: true,
           },
           {
             company: "StartupXYZ",
             position: "Full Stack Developer",
             relevanceScore: 85,
-            included: true
+            included: true,
           },
           {
             company: "Local Restaurant",
             position: "Server",
             relevanceScore: 15,
             included: false,
-            reasoning: "Not relevant to software development position"
-          }
+            reasoning: "Not relevant to software development position",
+          },
         ],
         skillsOptimization: {
-          technicalSkills: ["JavaScript", "React", "Node.js", "Python", "AWS", "MongoDB"],
-          softSkills: ["Team Leadership", "Problem Solving", "Communication", "Project Management"],
-          missingSkills: ["Docker", "Kubernetes", "GraphQL", "TypeScript"]
-        }
+          technicalSkills: [
+            "JavaScript",
+            "React",
+            "Node.js",
+            "Python",
+            "AWS",
+            "MongoDB",
+          ],
+          softSkills: [
+            "Team Leadership",
+            "Problem Solving",
+            "Communication",
+            "Project Management",
+          ],
+          missingSkills: ["Docker", "Kubernetes", "GraphQL", "TypeScript"],
+        },
       };
 
       setOptimizationResults(mockResults);
       setShowResults(true);
-      
-    } catch (err: any) {
-      setError('Failed to generate AI-enhanced documents. Please try again.');
+    } catch {
+      setError("Failed to generate AI-enhanced documents. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -146,7 +195,10 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
     setShowResults(false);
     // Save the URLs to the parent component
     if (optimizationResults) {
-      onSave(optimizationResults.optimizedResumeUrl, optimizationResults.optimizedCoverLetterUrl);
+      onSave(
+        optimizationResults.optimizedResumeUrl,
+        optimizationResults.optimizedCoverLetterUrl
+      );
     }
     onClose();
   };
@@ -201,7 +253,8 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
               placeholder="Job description will be used to tailor your resume and cover letter..."
             />
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              This job description will be analyzed by AI to optimize your resume and cover letter
+              This job description will be analyzed by AI to optimize your
+              resume and cover letter
             </p>
           </div>
 
@@ -211,7 +264,7 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
               <Upload size={16} className="inline mr-2" />
               Upload Your Current Resume
             </label>
-            
+
             {/* Local File Upload */}
             <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-4">
               <div className="text-center">
@@ -247,16 +300,16 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <span>Or select from cloud storage:</span>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Google Drive */}
                 <button
                   type="button"
-                  onClick={() => handleCloudProviderChange('google-drive')}
+                  onClick={() => handleCloudProviderChange("google-drive")}
                   className={`p-4 border rounded-lg flex items-center gap-3 transition-all ${
-                    cloudProvider === 'google-drive'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+                    cloudProvider === "google-drive"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
                   }`}
                 >
                   <Cloud size={20} className="text-blue-600" />
@@ -268,11 +321,11 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
                 {/* OneDrive */}
                 <button
                   type="button"
-                  onClick={() => handleCloudProviderChange('onedrive')}
+                  onClick={() => handleCloudProviderChange("onedrive")}
                   className={`p-4 border rounded-lg flex items-center gap-3 transition-all ${
-                    cloudProvider === 'onedrive'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+                    cloudProvider === "onedrive"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
                   }`}
                 >
                   <Cloud size={20} className="text-blue-600" />
@@ -284,11 +337,11 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
                 {/* Dropbox */}
                 <button
                   type="button"
-                  onClick={() => handleCloudProviderChange('dropbox')}
+                  onClick={() => handleCloudProviderChange("dropbox")}
                   className={`p-4 border rounded-lg flex items-center gap-3 transition-all ${
-                    cloudProvider === 'dropbox'
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+                    cloudProvider === "dropbox"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
                   }`}
                 >
                   <Cloud size={20} className="text-blue-600" />
@@ -302,9 +355,10 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
               {cloudProvider && (
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {cloudProvider === 'google-drive' && 'Google Drive File URL'}
-                    {cloudProvider === 'onedrive' && 'OneDrive File URL'}
-                    {cloudProvider === 'dropbox' && 'Dropbox File URL'}
+                    {cloudProvider === "google-drive" &&
+                      "Google Drive File URL"}
+                    {cloudProvider === "onedrive" && "OneDrive File URL"}
+                    {cloudProvider === "dropbox" && "Dropbox File URL"}
                   </label>
                   <input
                     type="url"
@@ -314,7 +368,8 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
                     placeholder={`Enter your ${cloudProvider} file URL...`}
                   />
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Make sure the file is publicly accessible or shared with appropriate permissions
+                    Make sure the file is publicly accessible or shared with
+                    appropriate permissions
                   </p>
                 </div>
               )}
@@ -326,7 +381,11 @@ const AIEnhancementModal: React.FC<AIEnhancementModalProps> = ({
             <button
               type="button"
               onClick={handleGenerateAI}
-              disabled={loading || (!selectedFile && !cloudFileUrl) || !jobDescription.trim()}
+              disabled={
+                loading ||
+                (!selectedFile && !cloudFileUrl) ||
+                !jobDescription.trim()
+              }
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-all disabled:cursor-not-allowed"
             >
               {loading ? (

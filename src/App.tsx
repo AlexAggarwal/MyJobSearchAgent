@@ -13,7 +13,7 @@ import RegisterForm from './components/auth/RegisterForm';
 import ForgotPassword from './components/auth/ForgotPassword';
 import VerifyPhone from './components/auth/VerifyPhone';
 import Dashboard from './components/dashboard/DashboardMain';
-import { useAuth } from './hooks/useAuth';
+import InterviewApp from './pages/Interview'
 
 function App() {
   useEffect(() => {
@@ -31,6 +31,9 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-phone" element={<VerifyPhone />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/interview" element={<InterviewApp />} />
+        
+        {/* Main application route */}
         <Route
           path="/"
           element={

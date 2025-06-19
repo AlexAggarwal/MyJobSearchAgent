@@ -6,7 +6,7 @@ import AIEnhancementModal from './AIEnhancementModal';
 
 interface ApplicationModalProps {
   application: JobApplication | null;
-  onSave: (data: any) => void;
+  onSave: (data: JobApplication) => void;
   onClose: () => void;
 }
 
@@ -25,7 +25,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
   const [error, setError] = useState('');
   const [showAIModal, setShowAIModal] = useState(false);
 
-  const { user } = useAuth();
+  useAuth();
 
   useEffect(() => {
     if (application) {
@@ -44,7 +44,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
       setFormData({
         company_name: '',
         position: '',
-        status: 'not_applied',
+        status: 'NOT_APPLIED',
         application_date: new Date().toISOString().split('T')[0],
         job_posting_url: '',
         job_description: '',
@@ -60,11 +60,16 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
     setError('');
     
     const submitData = {
+      id: application?.id || '',
+      user_id: application?.user_id || '',
+      created_at: application?.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      last_updated: new Date().toISOString(),
       ...formData,
       application_date: new Date(formData.application_date).toISOString(),
     };
 
-    onSave(submitData);
+    onSave(submitData as JobApplication);
   };
 
   const handleLoadAIEnhanced = () => {
