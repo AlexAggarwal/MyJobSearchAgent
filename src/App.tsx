@@ -14,7 +14,7 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import VerifyPhone from './components/auth/VerifyPhone';
 import Dashboard from './components/dashboard/DashboardMain';
 import MockInterview from './components/MockInterview';
-import { useAuth } from './hooks/useAuth';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
   useEffect(() => {
@@ -26,14 +26,20 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<LoginForm />} />
+      <Routes>        <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-phone" element={<VerifyPhone />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/mock-interview" element={<React.StrictMode><MockInterview /></React.StrictMode>} />
-        <Route
+        <Route 
+          path="/mock-interview" 
+          element={
+            <ProtectedRoute>
+              <MockInterview />
+            </ProtectedRoute>
+          } 
+        />
+       <Route
           path="/"
           element={
             <div className="min-h-screen bg-white dark:bg-gray-900 theme-transition">

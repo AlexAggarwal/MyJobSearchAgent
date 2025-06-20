@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Building, FileText, User, Link, Sparkles } from 'lucide-react';
+import { X, Calendar, Building, FileText, User, Link, Sparkles, Video } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { JobApplication, ApplicationStatus } from '../../types/jobApplication';
-import { useAuth } from '../../hooks/useAuth';
 import AIEnhancementModal from './AIEnhancementModal';
 
 interface ApplicationModalProps {
@@ -11,21 +11,19 @@ interface ApplicationModalProps {
 }
 
 const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave, onClose }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     company_name: '',
     position: '',
-    status: 'not_applied' as keyof typeof ApplicationStatus,
+    status: 'NOT_APPLIED' as keyof typeof ApplicationStatus,
     application_date: '',
     job_posting_url: '',
     job_description: '',
     notes: '',
     resume_url: '',
     cover_letter_url: ''
-  });
-  const [error, setError] = useState('');
+  });  const [error, setError] = useState('');
   const [showAIModal, setShowAIModal] = useState(false);
-
-  const { user } = useAuth();
 
   useEffect(() => {
     if (application) {
@@ -44,7 +42,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
       setFormData({
         company_name: '',
         position: '',
-        status: 'not_applied',
+        status: 'NOT_APPLIED',
         application_date: new Date().toISOString().split('T')[0],
         job_posting_url: '',
         job_description: '',
@@ -74,7 +72,6 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
     }
     setShowAIModal(true);
   };
-
   const handleAISave = (resumeUrl: string, coverLetterUrl: string) => {
     setFormData(prev => ({
       ...prev,
@@ -84,6 +81,10 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
              `AI-enhanced documents generated on ${new Date().toLocaleDateString()} based on job posting analysis.`
     }));
     setShowAIModal(false);
+  };
+
+  const handleStartMockInterview = () => {
+    navigate('/mock-interview');
   };
 
   return (
@@ -204,9 +205,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 placeholder="Paste or type the job description here..."
               />
-            </div>
-
-            {/* AI Enhancement Section */}
+            </div>            {/* AI Enhancement Section */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center">
@@ -224,11 +223,31 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ application, onSave
                 </button>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Generate AI-optimized resume and cover letter tailored to this specific job posting. 
+                Generate AI-optimized resume and cover letter tailored to this specific job posting.
                 {!formData.job_description && " Please add a job description first."}
               </p>
             </div>
 
+            {/* Mock Interview Section */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4 rounded-lg border border-green-200 dark:border-green-700">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center">
+                  <Video className="text-green-600 dark:text-green-400 mr-2" size={20} />
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Mock Interview Practice</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleStartMockInterview}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all"
+                >
+                  <Video size={16} />
+                  Start Mock Interview
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Practice your interview skills with AI-powered mock interviews tailored to your experience and the job requirements.
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

@@ -1,4 +1,4 @@
-import { IConversation } from "@/types";
+import { IConversation } from "../types";
 
 export const createConversation = async (): Promise<IConversation> => {
   // Get API key from environment
