@@ -49,9 +49,9 @@ const MockInterview: React.FC = () => {
       } else {
         throw new Error('Invalid conversation data received from Tavus API');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error creating conversation:', err);
-      setError(err.message || 'Failed to initialize interview');
+      setError((err as Error).message || 'Failed to initialize interview');
     } finally {
       setLoading(false);
     }
