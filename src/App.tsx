@@ -13,7 +13,8 @@ import RegisterForm from './components/auth/RegisterForm';
 import ForgotPassword from './components/auth/ForgotPassword';
 import VerifyPhone from './components/auth/VerifyPhone';
 import Dashboard from './components/dashboard/DashboardMain';
-import InterviewApp from './pages/Interview'
+import MockInterview from './components/MockInterview';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
   useEffect(() => {
@@ -31,9 +32,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-phone" element={<VerifyPhone />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/interview" element={<InterviewApp />} />
-        
-        {/* Main application route */}
+        <Route path="/mock-interview" element={<React.StrictMode><MockInterview /></React.StrictMode>} />
         <Route
           path="/"
           element={

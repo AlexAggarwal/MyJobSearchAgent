@@ -1,13 +1,18 @@
-export enum ConversationStatus {
-  ACTIVE = "active",
-  ENDED = "ended",
-  ERROR = "error",
-}
-
-export type IConversation = {
+// Tavus API types
+export interface IConversation {
   conversation_id: string;
   conversation_name: string;
-  status: ConversationStatus;
+  status: string;
   conversation_url: string;
+  replica_id: string;
+  persona_id: string;
   created_at: string;
-};
+}
+
+// Settings types
+export interface Settings {
+  persona?: string;
+  greeting?: string;
+  context?: string;
+  name?: string;
+}

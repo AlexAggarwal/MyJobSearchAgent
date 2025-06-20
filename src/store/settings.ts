@@ -1,31 +1,15 @@
-import { atom } from "jotai";
+import { atom } from 'jotai';
 
-interface Settings {
-  name: string;
-  language: string;
-  interruptSensitivity: string;
-  greeting: string;
-  context: string;
-  persona: string;
-  replica: string;
+export interface Settings {
+  persona?: string;
+  greeting?: string;
+  context?: string;
+  name?: string;
 }
 
-const getInitialSettings = (): Settings => {
-  const savedSettings = localStorage.getItem('tavus-settings');
-  if (savedSettings) {
-    return JSON.parse(savedSettings);
-  }
-  return {
-    name: "",
-    language: "en",
-    interruptSensitivity: "medium",
-    greeting: "",
-    context: "",
-    persona: "",
-    replica: "",
-  };
-};
-
-export const settingsAtom = atom<Settings>(getInitialSettings());
-
-export const settingsSavedAtom = atom<boolean>(false); 
+export const settingsAtom = atom<Settings>({
+  persona: "pd43ffef", // Default persona ID
+  greeting: "Hey there! I'm your technical co-pilot! Let's get started building with Tavus.",
+  context: "You are conducting a mock interview for a software engineering position. Be professional, encouraging, and ask relevant technical and behavioral questions.",
+  name: "Candidate"
+});

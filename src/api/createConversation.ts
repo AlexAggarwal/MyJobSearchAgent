@@ -1,42 +1,22 @@
 import { IConversation } from "@/types";
-import { settingsAtom } from "@/store/settings";
-import { getDefaultStore } from "jotai";
 
-export const createConversation = async (
-  token: string,
-): Promise<IConversation> => {
-  // Get settings from Jotai store
-  const settings = getDefaultStore().get(settingsAtom);
+export const createConversation = async (): Promise<IConversation> => {
+  // Get API key from environment
+  const token = import.meta.env.VITE_TAVUS_API_KEY;
   
-  // Add debug logs
-  console.log('Creating conversation with settings:', settings);
-  console.log('Greeting value:', settings.greeting);
-  console.log('Context value:', settings.context);
-  
-  // Build the context string
-  let contextString = "";
-  if (settings.name) {
-    contextString = `You are talking with the user, ${settings.name}. Additional context: `;
+  if (!token) {
+    throw new Error('VITE_TAVUS_API_KEY is not configured in environment variables');
   }
-  contextString += settings.context || "";
-  
-  const payload = {
-    persona_id: settings.persona || "pd43ffef",
-    custom_greeting: settings.greeting !== undefined && settings.greeting !== null 
-      ? settings.greeting 
-      : "Hey there! I'm your technical co-pilot! Let's get get started building with Tavus.",
-    conversational_context: contextString
-  };
-  
-  console.log('Sending payload to API:', payload);
-  
-  const response = await fetch("https://tavusapi.com/v2/conversations", {
-    method: "POST",
+
+  const response = await fetch('https://tavusapi.com/v2/conversations', {
+    method: 'POST',
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": token ?? "",
+      "x-api-key": token
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      "persona_id": "pe13ed370726"
+    }),
   });
 
   if (!response?.ok) {
